@@ -13,9 +13,7 @@ const ATLASSIAN_TOKEN_CHECK_FLAG = "X-Atlassian-Token";
 const ATLASSIAN_TOKEN_CHECK_NOCHECK_VALUE = "no-check";
 
 export class MyBaseClient implements Client {
-	protected urlSuffix = "/wiki/rest";
-
-	constructor(protected readonly config: Config) {}
+	constructor(protected readonly config: Config, protected readonly urlSuffix: string) {}
 
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	protected paramSerializer(parameters: Record<string, any>): string {

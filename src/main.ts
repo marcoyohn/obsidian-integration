@@ -22,6 +22,10 @@ import { Mermaid } from "mermaid";
 
 export interface ObsidianPluginSettings
 	extends ConfluenceUploadSettings.ConfluenceSettings {
+	confluenceBaseUrlSuffix: string;
+	authentication:
+		| "basic"
+		| "oauth2";
 	mermaidTheme:
 		| "match-obsidian"
 		| "light-obsidian"
@@ -74,11 +78,15 @@ export default class ConfluencePlugin extends Plugin {
 		);
 		const confluenceClient = new ObsidianConfluenceClient({
 			host: this.settings.confluenceBaseUrl,
-			authentication: {
+			authentication: this.settings.authentication === 'basic' ? {
 				basic: {
 					email: this.settings.atlassianUserName,
 					apiToken: this.settings.atlassianApiToken,
 				},
+			} : {
+				oauth2: {
+					accessToken: this.settings.atlassianApiToken,
+				}
 			},
 			middlewares: {
 				onError(e) {
@@ -90,7 +98,7 @@ export default class ConfluencePlugin extends Plugin {
 					}
 				},
 			},
-		});
+		}, this.settings.confluenceBaseUrlSuffix);
 
 		const settingsLoader = new StaticSettingsLoader(this.settings);
 		this.publisher = new Publisher(
@@ -247,13 +255,17 @@ export default class ConfluencePlugin extends Plugin {
 
 				const confluenceClient = new ObsidianConfluenceClient({
 					host: this.settings.confluenceBaseUrl,
-					authentication: {
+					authentication: this.settings.authentication === 'basic' ? {
 						basic: {
 							email: this.settings.atlassianUserName,
 							apiToken: this.settings.atlassianApiToken,
 						},
+					} : {
+						oauth2: {
+							accessToken: this.settings.atlassianApiToken,
+						}
 					},
-				});
+				}, this.settings.confluenceBaseUrlSuffix);
 				const testingPage =
 					await confluenceClient.content.getContentById({
 						id: "9732097",

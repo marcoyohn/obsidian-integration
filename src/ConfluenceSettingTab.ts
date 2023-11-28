@@ -30,6 +30,32 @@ export class ConfluenceSettingTab extends PluginSettingTab {
 						await this.plugin.saveSettings();
 					}),
 			);
+		
+		new Setting(containerEl)
+		.setName("Confluence Api Base Url Suffix")
+		.setDesc('Base Url Suffix: /wiki/rest  or /rest')
+		.addText((text) =>
+			text
+				.setPlaceholder("/wiki/rest")
+				.setValue(this.plugin.settings.confluenceBaseUrlSuffix)
+				.onChange(async (value) => {
+					this.plugin.settings.confluenceBaseUrlSuffix = value;
+					await this.plugin.saveSettings();
+				}),
+		);
+
+		new Setting(containerEl)
+		.setName("Confluence Api Authentication type")
+		.setDesc('Authentication type: basic  or oauth2')
+		.addText((text) =>
+			text
+				.setPlaceholder("oauth2")
+				.setValue(this.plugin.settings.authentication)
+				.onChange(async (value) => {
+					this.plugin.settings.authentication = value as any;
+					await this.plugin.saveSettings();
+				}),
+		);
 
 		new Setting(containerEl)
 			.setName("Atlassian Username")
